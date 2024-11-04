@@ -229,3 +229,6 @@ Digite 5 para alterar as condições climaticas""")
                 print("Arquivo não encontrado! por favor tente novamente")
             
             limparTela()
+        
+        case _:
+            print("Opção invalido, por favor digite novamente!")
