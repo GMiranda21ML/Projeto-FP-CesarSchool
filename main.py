@@ -19,8 +19,10 @@
 # 7. Funcionalidade Extra: Ter pelo menos uma outra funcionalidade a mais que não
 # está descrita aqui neste documento. Sejam criativos e divirtam-se!
 
-import os
 
+
+
+import os
 
 def formatacao(variavel):
     return variavel.replace("/", "")
