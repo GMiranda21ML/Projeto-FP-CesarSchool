@@ -41,6 +41,7 @@ Digite 1 para adicionar um registro de treino e competição
 Digite 2 para visualizar um registro de treino e competição
 Digite 3 para atualizar um registro de treino e competição
 Digite 4 para excluir um registro de treino e competição
+Digite 6 para vê sugestões de treinos aleatorios
 Digite 0 para encerrar o programa""")
     opcao = int(input("Digite sua opção: "))
 
@@ -64,8 +65,7 @@ Digite 0 para encerrar o programa""")
             # data = data.replace("/", "")
             dataFormatada = formatacao(data)
             with open(f"Treino{dataFormatada}.txt", "w", encoding="utf-8") as file:
-                file.write(f"""
-Data: {data}
+                file.write(f"""Data: {data}
 Distancia percorrida: {distanciaPercorrida}km
 Tempo: {tempo}min
 Localização: {localizacao}
@@ -232,5 +232,56 @@ Digite 5 para alterar as condições climaticas""")
             
             limparTela()
         
+        
+        case 6:
+            os.system("cls")
+            
+            listaAleatorios = []
+            
+            caminhoDaPasta = "treinosAleatorios"
+            for arquivo in os.listdir(caminhoDaPasta):
+                if arquivo.startswith("treinoAleatorio") and arquivo.endswith(".txt"): #and os.path.isfile(arquivo):
+                    listaAleatorios.append(arquivo)
+            
+            for treinosAleatorios in listaAleatorios:
+                caminhoArquivo = os.path.join(caminhoDaPasta, treinosAleatorios) #caminhoDaPasta + "/" + treinoAleatorio
+                with open(caminhoArquivo, "r", encoding="UTF-8") as file:
+                    print(f"\nArquivo: {treinosAleatorios}")
+                    print(file.read())
+                    print("-" * 30)
+                    file.close() 
+            
+            while True:
+                print("Você fez algum dos treinos aleatorios?")
+                fazer = int(input("Se sim, digite o número de 1 a 5 para marcar como feito, se nao, digite 0: "))
+                
+                if 1 <= fazer <= 5:
+                    treinoFeito = "treinoAleatorio" + str(fazer) + ".txt"
+                    arquivoCaminho = os.path.join(caminhoDaPasta, treinoFeito)
+                    
+                    with open(arquivoCaminho, "r", encoding="UTF-8") as file:
+                        conteudo = file.readlines()
+                        
+                        for i in range(len(conteudo)):
+                            if "Status: " in conteudo[i]:
+                                conteudo[i] = f"Status: feito✔️\n"
+                    
+                        file.close()
+                    
+                    with open(arquivoCaminho, "w", encoding="UTF-8") as file:
+                        file.writelines(conteudo)
+                        file.close()
+                    
+                    print(f"{treinoFeito} foi atualizado como feito!!")
+                    
+                    
+                    break
+                elif fazer == 0:
+                    break
+                else:
+                    print("Opção incorreta, por favor digite novamente!")
+            
+            limparTela()
+            
         case _:
             print("Opção invalido, por favor digite novamente!")

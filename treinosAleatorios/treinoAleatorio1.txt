@@ -1,0 +1,6 @@
+Data: a sua escolha
+Distância percorrida: 8.5km
+Tempo: 35min
+Localização: Recife
+Condições climáticas: indiferente
+Status: a fazer

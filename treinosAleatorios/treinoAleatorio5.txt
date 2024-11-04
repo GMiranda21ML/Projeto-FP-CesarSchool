@@ -1,0 +1,6 @@
+Data: a sua escolha
+Distância percorrida: 11.5km
+Tempo: 52min
+Localização: Pina
+Condições climáticas: indiferente
+Status: a fazer

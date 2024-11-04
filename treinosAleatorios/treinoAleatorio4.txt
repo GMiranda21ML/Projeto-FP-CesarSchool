@@ -1,0 +1,6 @@
+Data: a sua escolha
+Distância percorrida: 9.5km
+Tempo: 42min
+Localização: Olinda
+Condições climáticas: indiferente
+Status: a fazer

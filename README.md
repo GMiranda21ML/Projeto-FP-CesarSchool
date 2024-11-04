@@ -20,6 +20,6 @@ O sistema armazena os dados de **treinos** ou **competições** de corrida de um
 | --------------- | ----- | ----- |
 | Andre Avelino   | A     | 18    |
 | Arthur Monteiro | A     | 18    |
-| Caio Maphews    | A     | 18    |
+| Caio Mafhews    | A     | 18    |
 | Gabriel Miranda | A     | 18    |
 | Thiago Medeiros | A     | 19    |

@@ -1,0 +1,6 @@
+Data: a sua escolha
+Distância percorrida: 6.0km
+Tempo: 28min
+Localização: Paulista
+Condições climáticas: indiferente
+Status: a fazer
