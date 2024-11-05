@@ -1,27 +1,3 @@
-# 1. CRUD de Treinos e Competições: Pedro deve poder adicionar, visualizar,
-# atualizar e excluir os registros de seus treinos e competições através de um menu
-# interativo.
-# 2. Cadastro de Treinos e Competições: O sistema deve permitir que Pedro registre
-# informações sobre cada treino ou competição, incluindo data, distância percorrida,
-# tempo, localização, e condições climáticas.
-# 3. Filtragem por Distância ou Tempo: O sistema deve permitir que Pedro filtre
-# seus treinos com base na distância percorrida ou no tempo, ajudando-o a analisar
-# seu desempenho em diferentes distâncias.
-# 4. Armazenamento de Dados: Todas as informações dos treinos e competições
-# devem ser armazenadas em um banco de dados para que possam ser acessadas a
-# qualquer momento (arquivo .txt ou .csv).
-# 5. Metas e Desafios: O sistema deve permitir que Pedro defina metas pessoais
-# (como correr 100 km por mês ou melhorar o tempo em 5 km), e o acompanhe no
-# cumprimento dessas metas.
-# 6. Sugestões de Treinos Aleatórios: O sistema deve sugerir treinos aleatórios, com
-# base no histórico de Pedro, para que ele possa variar sua rotina e melhorar seu
-# desempenho.
-# 7. Funcionalidade Extra: Ter pelo menos uma outra funcionalidade a mais que não
-# está descrita aqui neste documento. Sejam criativos e divirtam-se!
-
-
-
-
 import os
 
 def formatacao(variavel):
@@ -31,6 +7,78 @@ def formatacao(variavel):
 def limparTela():
     input("Digite qualquer tecla para voltar ao menu: ")
     os.system("cls")
+
+
+def create(dataFormatada, data, distanciaPercorrida, tempo, localizacao, condicoesClimaticas):
+    with open(f"Treino{dataFormatada}.txt", "w", encoding="utf-8") as file:
+        file.write(f"""Data: {data}
+Distancia percorrida: {distanciaPercorrida}km
+Tempo: {tempo}min
+Localização: {localizacao}
+Condições climaticas: {condicoesClimaticas}
+""")
+
+
+def selecionartudo(comeco, fim, caminho):
+    arquivosTreinos = []
+    for arquivo in os.listdir(caminho):
+        if arquivo.startswith(comeco) and arquivo.endswith(fim): #and os.path.isfile(arquivo):
+            arquivosTreinos.append(arquivo)
+    return arquivosTreinos
+
+
+def read():
+    for arquivo in arquivosTreinos:
+        with open(arquivo, "r", encoding="utf-8") as file:
+            print(f"\nArquivo: {arquivo}")
+            print(file.read())
+            print("-" * 30)
+            file.close()
+
+
+def readFiltrado(filtro, arquivosTreinos, linha, medida): 
+    for arquivo in arquivosTreinos:
+        with open(arquivo, "r", encoding="utf-8") as file:
+            conteudo = file.read()
+            if linha in conteudo:
+                filtroStr = conteudo[conteudo.index(linha):]
+                filtroStr = filtroStr.split(":")[1].strip()
+                filtroStr = filtroStr.split()[0]
+                valorFiltrado = float(filtroStr.replace(medida, "").strip())
+                
+            if valorFiltrado >= filtro:
+                print(f"\nArquivo: {arquivo}") 
+                print(conteudo)
+                print("-" * 30)
+                file.close()  
+
+
+#obs: tlvz eu consiga juntar o update com o atualizarArquivo
+def update(conteudo, formatacao, valorProUpdate, medida): 
+    for i in range(len(conteudo)):
+        if formatacao in conteudo[i]:
+            conteudo[i] = f"{formatacao}{valorProUpdate}{medida}\n"
+    return conteudo
+
+
+def atualizarArquivo(nomeArquivo, conteudo):
+    with open(nomeArquivo, "w", encoding="utf-8") as file:
+        file.writelines(conteudo)
+
+
+def lerArquivo(nomeArquivo):
+    with open(nomeArquivo, "r", encoding="UTF-8") as file:
+        conteudo = file.readlines()
+    return conteudo
+
+
+def delete():
+    if os.path.exists(f"Treino{dataNomeArquivo}.txt"):
+        os.remove(f"Treino{dataNomeArquivo}.txt")
+        print("Arquivo excluido com sucesso!")
+    else:
+        print("Arquivo não encontrado! por favor tente novamente")
+
 
 treinos = {"Data":[], "DistanciaPercorrida":[], "Tempo":[], "Localizacao":[], "CondicoesClimaticas":[]}
 
@@ -51,102 +99,59 @@ Digite 0 para encerrar o programa""")
             break
         
         case 1:
-            data = input("Digite a data do seu treino/competição (DD/MM/YYYY): ") # LEMBRAR DA TRATAÇÃO DO USUARIO EX: DATA > 10
-            treinos["Data"] = data
-            distanciaPercorrida = float(input("Digite a distancia percorrida (KM): "))
-            treinos["DistanciaPercorrida"] = distanciaPercorrida
-            tempo = int(input("Digite o tempo em minutos que você levou para concluir esse treino/competição: "))
-            treinos["Tempo"] = tempo
-            localizacao = input("Digite a localizacao do seu treino/competição: ")
-            treinos["Localizacao"] = localizacao
-            condicoesClimaticas = input("Digite as condições climaticas na hora do treino/competição: ")
-            treinos["CondicoesClimaticas"] = condicoesClimaticas
+            try: 
+                data = input("Digite a data do seu treino/competição (DD/MM/YYYY): ") # LEMBRAR DA TRATAÇÃO DO USUARIO EX: DATA > 10
+                treinos["Data"] = data
+                distanciaPercorrida = float(input("Digite a distancia percorrida (KM): "))
+                treinos["DistanciaPercorrida"] = distanciaPercorrida
+                tempo = int(input("Digite o tempo em minutos que você levou para concluir esse treino/competição: "))
+                treinos["Tempo"] = tempo
+                localizacao = input("Digite a localizacao do seu treino/competição: ")
+                treinos["Localizacao"] = localizacao
+                condicoesClimaticas = input("Digite as condições climaticas na hora do treino/competição: ")
+                treinos["CondicoesClimaticas"] = condicoesClimaticas
+                dataFormatada = formatacao(data)
+                create(dataFormatada, data, distanciaPercorrida, tempo, localizacao, condicoesClimaticas) 
 
-            # data = data.replace("/", "")
-            dataFormatada = formatacao(data)
-            with open(f"Treino{dataFormatada}.txt", "w", encoding="utf-8") as file:
-                file.write(f"""Data: {data}
-Distancia percorrida: {distanciaPercorrida}km
-Tempo: {tempo}min
-Localização: {localizacao}
-Condições climaticas: {condicoesClimaticas}
-""")
-                file.close()
-            
+            except ValueError:
+                print("Você digitou um número errado, por favor digite novamente!")
+
             limparTela()
+
 
         case 2:
-            #Filtragem por Distância ou Tempo: O sistema deve permitir que Pedro filtre
-            # seus treinos com base na distância percorrida ou no tempo, ajudando-o a analisar
-            # seu desempenho em diferentes distâncias.
             os.system("cls")
-            filtro = input("Você deseja filtrar na hora da visualização de seus treinos (Sim/Nao)? ").lower()
-
-            arquivosTreinos = []
-            for arquivo in os.listdir("."):
-                if arquivo.startswith("Treino") and arquivo.endswith(".txt"): #and os.path.isfile(arquivo):
-                    arquivosTreinos.append(arquivo)
-
-            if filtro == "nao" or filtro == "não":
-                for arquivo in arquivosTreinos:
-                    with open(arquivo, "r", encoding="utf-8") as file:
-                        print(f"\nArquivo: {arquivo}")
-                        print(file.read())
-                        print("-" * 30)
-                        file.close()
-
-                # for data, distancia, tempo, localizacao, clima in zip(treinos["Data"], str(treinos["DistanciaPercorrida"]), str(treinos["Tempo"]), 
-                #                                                       treinos["Localizacao"], treinos["CondicoesClimaticas"]):
-                #     print(f"Data: {data}")
-                #     print(f"DistanciaPercorrida: {distancia}km")
-                #     print(f"Tempo: {tempo}min")
-                #     print(f"Localizacao: {localizacao}")
-                #     print(f"CondicoesClimaticas: {clima}")
-                #     print("-" * 30)
-            
-            elif filtro == "sim":
-                criterio = int(input("Você deseja filtrar por distancia ou tempo? Digite 1 ou 2, respectivamente: "))
+            while True:
+                filtro = input("Você deseja filtrar na hora da visualização de seus treinos (Sim/Nao)? ").lower()
                 
-                if criterio == 1:
-                    distanciaFiltro = float(input("Digite a distancia mínima para filtrar (em km): "))
+                arquivosTreinos = selecionartudo("Treino", ".txt", ".")
 
-                    for arquivo in arquivosTreinos:
-                        with open(arquivo, "r", encoding="utf-8") as file:
-                            conteudo = file.read()
-                            if "Distancia percorrida:" in conteudo:
-                                distanciaStr = conteudo[conteudo.index("Distancia percorrida:"):]
-                                distanciaStr = distanciaStr.split(":")[1].strip()
-                                distanciaStr = distanciaStr.split()[0]
-                                distancia = float(distanciaStr.replace("km", "").strip())
-                                
-                            if distancia >= distanciaFiltro:
-                                print(f"\nArquivo: {arquivo}") 
-                                print(conteudo)
-                                print("-" * 30)
-                                file.close()   
+                if filtro == "nao" or filtro == "não":
+                    read()
+                    break
 
-                elif criterio == 2:
-                    tempoFiltro = int(input("Digite a o tempo mínimo para filtrar (em min): "))
+                elif filtro == "sim":
+                    criterio = int(input("Você deseja filtrar por distancia ou tempo? Digite 1 ou 2, respectivamente: "))
+                    
+                    if criterio == 1:
+                        distanciaFiltro = float(input("Digite a distancia mínima para filtrar (em km): "))
+                        readFiltrado(distanciaFiltro, arquivosTreinos, "Distancia percorrida:", "km")
 
-                    for arquivo in arquivosTreinos:
-                        with open(arquivo, "r", encoding="utf-8") as file:
-                            conteudo = file.read()
-                            if "Tempo:" in conteudo:
-                                tempoStr = conteudo[conteudo.index("Tempo:"):]
-                                tempoStr = tempoStr.split(":")[1].strip()
-                                tempoStr = tempoStr.split()[0]
-                                tempoExibir = int(tempoStr.replace("min", "").strip())
-                                
-                            if tempoExibir >= tempoFiltro:
-                                print(f"\nArquivo: {arquivo}") 
-                                print(conteudo)
-                                print("-" * 30)
-                                file.close()   
 
-                else:
-                    print("Opção invalida, por favor digite novamente!!")
+                    elif criterio == 2:
+                        tempoFiltro = int(input("Digite a o tempo mínimo para filtrar (em min): "))
+
+                        readFiltrado(tempoFiltro, arquivosTreinos, "Tempo:", "min")
+
+                    else:
+                        print("Opção invalida, por favor digite novamente!!")
+                    break
+                
+                else: 
+                    print("Opção invalida, por favor, digite-a corretamente!")
                 
             limparTela()
+
 
         case 3:
             os.system("cls")
@@ -164,50 +169,35 @@ Digite 4 para alterar a localização
 Digite 5 para alterar as condições climaticas""")
                 opcaoUpdate = int(input("Digite a opção que você deseja alterar: "))
 
-                with open(nomeArquivo, "r", encoding="utf-8") as file:
-                    conteudo = file.readlines()
+                conteudo = lerArquivo(nomeArquivo)
 
                 match opcaoUpdate:
                     case 1:
                         novaData = input("Digite a nova data: ")
-
-                        # novaDataFormatada = formatacao(novaData)
-                        for i in range(len(conteudo)):
-                            if "Data: " in conteudo[i]:
-                                conteudo[i] = f"Data: {novaData}\n"
+                        
+                        conteudo = update(conteudo, "Data: ", novaData, "")
 
                     case 2: 
                         novaDistanciaPercorrida = float(input("Digite a nova distancia percorrida: "))
                         
-                        for i in range(len(conteudo)):
-                            if "Distancia percorrida: " in conteudo[i]:
-                                conteudo[i] = f"Distancia percorrida: {novaDistanciaPercorrida}km\n"                      
+                        conteudo = update(conteudo, "Distancia percorrida: ", novaDistanciaPercorrida, "km")
 
                     case 3: 
                         novoTempo = int(input("Digite o novo tempo: "))
 
-                        for i in range(len(conteudo)):
-                            if "Tempo: " in conteudo[i]:
-                                conteudo[i] = f"Tempo: {novoTempo}min\n"
+                        conteudo = update(conteudo, "Tempo: ", novoTempo, "min")
                     
                     case 4:
                         novaLocalizacao = input("Digite a nova localização: ")
                         
-                        for i in range(len(conteudo)):
-                            if "Localização: " in conteudo[i]:
-                                conteudo[i] = f"Localização: {novaLocalizacao}\n"
-
+                        conteudo = update(conteudo, "Localização: ", novaLocalizacao, "")
                     
                     case 5:
                         novaCondicaoClimatica = input("Digite uma nova condição climatica: ")
                         
-                        for i in range(len(conteudo)):
-                            if "Condições climaticas: " in conteudo[i]:
-                                conteudo[i] = f"Condições climaticas: {novaCondicaoClimatica}\n"
+                        conteudo = update(conteudo, "Condições climaticas: ", novaCondicaoClimatica, "")
                 
-
-                with open(nomeArquivo, "w", encoding="utf-8") as file:
-                    file.writelines(conteudo)
+                atualizarArquivo(nomeArquivo, conteudo)
 
                 if opcaoUpdate == 1:
                     os.rename(nomeArquivo, f"Treino{formatacao(novaData)}.txt")
@@ -219,16 +209,14 @@ Digite 5 para alterar as condições climaticas""")
         
             limparTela()
 
+
         case 4:
             os.system("cls")
             dataNomeArquivo = input("Digite a data do treino que você deseja excluir: ")
 
             dataNomeArquivo = formatacao(dataNomeArquivo)
-            if os.path.exists(f"Treino{dataNomeArquivo}.txt"):
-                os.remove(f"Treino{dataNomeArquivo}.txt")
-                print("Arquivo excluido com sucesso!")
-            else:
-                print("Arquivo não encontrado! por favor tente novamente")
+            
+            delete()
             
             limparTela()
         
@@ -236,12 +224,9 @@ Digite 5 para alterar as condições climaticas""")
         case 6:
             os.system("cls")
             
-            listaAleatorios = []
-            
             caminhoDaPasta = "treinosAleatorios"
-            for arquivo in os.listdir(caminhoDaPasta):
-                if arquivo.startswith("treinoAleatorio") and arquivo.endswith(".txt"): #and os.path.isfile(arquivo):
-                    listaAleatorios.append(arquivo)
+
+            listaAleatorios =  selecionartudo("treinoAleatorio", ".txt", caminhoDaPasta)
             
             for treinosAleatorios in listaAleatorios:
                 caminhoArquivo = os.path.join(caminhoDaPasta, treinosAleatorios) #caminhoDaPasta + "/" + treinoAleatorio
@@ -259,23 +244,15 @@ Digite 5 para alterar as condições climaticas""")
                     treinoFeito = "treinoAleatorio" + str(fazer) + ".txt"
                     arquivoCaminho = os.path.join(caminhoDaPasta, treinoFeito)
                     
-                    with open(arquivoCaminho, "r", encoding="UTF-8") as file:
-                        conteudo = file.readlines()
-                        
-                        for i in range(len(conteudo)):
-                            if "Status: " in conteudo[i]:
-                                conteudo[i] = f"Status: feito✔️\n"
-                    
-                        file.close()
-                    
-                    with open(arquivoCaminho, "w", encoding="UTF-8") as file:
-                        file.writelines(conteudo)
-                        file.close()
+                    conteudo = lerArquivo(arquivoCaminho)
+
+                    update(conteudo, "Status: ", "feito✔️", "")
+
+                    atualizarArquivo(arquivoCaminho, conteudo)
                     
                     print(f"{treinoFeito} foi atualizado como feito!!")
-                    
-                    
                     break
+
                 elif fazer == 0:
                     break
                 else:
